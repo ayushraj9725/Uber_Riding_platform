@@ -1,5 +1,6 @@
 package org.example.authservice.Controller;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.example.authservice.DTOs.PassengerDTO;
 import org.example.authservice.DTOs.PassengerSignInRequestDTO;
@@ -63,7 +64,7 @@ public class AuthController {
                     .httpOnly(true)
                     .secure(false)
                     .path("/")
-                    .maxAge(cookieExpiry)
+                    .maxAge(7*24*3600)
                     .build();
 
             response.setHeader(HttpHeaders.SET_COOKIE, cookie.toString());
@@ -76,5 +77,11 @@ public class AuthController {
          else throw new UsernameNotFoundException("User not found");
     }
 
+
+    @GetMapping("/validate")
+    public ResponseEntity<?> validate(HttpServletRequest request){
+
+        return new ResponseEntity<>("success",HttpStatus.OK);
+    }
 
 }
