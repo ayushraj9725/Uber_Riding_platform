@@ -3,6 +3,7 @@ package org.example.authservice.Controller;
 import jakarta.servlet.http.HttpServletResponse;
 import org.example.authservice.DTOs.PassengerDTO;
 import org.example.authservice.DTOs.PassengerSignInRequestDTO;
+import org.example.authservice.DTOs.PassengerSignInResponseDTO;
 import org.example.authservice.DTOs.PassengerSignupRequestDto;
 import org.example.authservice.Services.AuthService;
 import org.example.authservice.Services.JWTService;
@@ -67,12 +68,12 @@ public class AuthController {
 
             response.setHeader(HttpHeaders.SET_COOKIE, cookie.toString());
 
-            return new ResponseEntity<>(jwtToken,HttpStatus.OK);
+            return new ResponseEntity<>(PassengerSignInResponseDTO.builder().success(true).build(),HttpStatus.OK);
 
             // return new ResponseEntity<>("Successfully logged in",HttpStatus.OK);
         }
 
-        throw new UsernameNotFoundException("User not found");
+         else throw new UsernameNotFoundException("User not found");
     }
 
 
