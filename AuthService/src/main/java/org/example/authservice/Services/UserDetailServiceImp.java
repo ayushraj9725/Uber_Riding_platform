@@ -6,6 +6,7 @@ import org.example.authservice.SecurityHelpers.AuthPassengerDetails;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -14,6 +15,7 @@ import java.util.Optional;
 // this class is responsible for loading the user in the form of userDetails object for auth
 
 @Service
+@Component
 public class UserDetailServiceImp implements UserDetailsService {
 
     private final PassengerRepository passengerRepository ;

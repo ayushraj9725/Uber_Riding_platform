@@ -1,7 +1,9 @@
 package org.example.authservice.Configurations;
 
+import org.example.authservice.Filters.JwtAuthFilter;
 import org.example.authservice.Repositories.PassengerRepository;
 import org.example.authservice.Services.UserDetailServiceImp;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -14,12 +16,12 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
 @EnableWebSecurity
-
 public class SpringSecurity implements WebMvcConfigurer {
 
     private final PassengerRepository passengerRepository ; // although we can use the Autowired to avoid constructor injection here
@@ -43,8 +45,11 @@ public class SpringSecurity implements WebMvcConfigurer {
                         auth
                                 .requestMatchers("api/v1/auth/signup/*").permitAll()
                                 .requestMatchers("api/v1/auth/signin/*").permitAll()
-                                .requestMatchers("api/v1/auth/validate").permitAll()
+                        // .requestMatchers("api/v1/auth/validate").permitAll() //we are removing this from auth permitted all because we need first user authenticated and then validate
                 )
+                .authorizeHttpRequests(auth ->
+                       auth.requestMatchers("api/v1/auth/validate").authenticated()) // now this is fine
+                .authenticationProvider((authenticationProvider()))
                 .build();
     }
 

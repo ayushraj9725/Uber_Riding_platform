@@ -7,7 +7,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.example.authservice.Services.JWTService;
 import org.example.authservice.Services.UserDetailServiceImp;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -19,12 +18,13 @@ import java.io.IOException;
 public class JwtAuthFilter extends OncePerRequestFilter {
 
 
-    @Autowired
-    private UserDetailServiceImp userDetailService ;
+    // @Autowired
+    private final UserDetailServiceImp userDetailService ;
 
     private final JWTService jwtService ;
 
-    public JwtAuthFilter(JWTService jwtService) {
+    public JwtAuthFilter(UserDetailServiceImp userDetailService, JWTService jwtService) {
+        this.userDetailService = userDetailService;
         this.jwtService = jwtService;
     }
 
@@ -45,6 +45,8 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
         if(token == null){
             // user has not provided and JWT Token hence request should not go forward
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            return ;
         }
 
         // if any token found then we have to validate it, so we are calling the extractEmail
@@ -65,8 +67,10 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                 usernamePasswordAuthenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                 SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken); // this makes sure the object usernamePassAuthToken is remembered to spring
 
-
             }
         }
+
+        filterChain.doFilter(request, response);
+
     }
 }
